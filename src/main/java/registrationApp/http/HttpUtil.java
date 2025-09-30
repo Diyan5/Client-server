@@ -13,19 +13,13 @@ import java.util.Map;
 public final class HttpUtil {
 
     public static Map<String, String> readFormUrlEncoded(HttpExchange ex) throws IOException {
-        int contentLength = 0;
-        String len = ex.getRequestHeaders().getFirst("Content-Length");
-        if (len != null) {
-            try { contentLength = Integer.parseInt(len); } catch (NumberFormatException ignored) {}
-        }
-        String body = readBody(ex, contentLength);
+        String body = readBody(ex);
         return parseUrlEncoded(body);
     }
 
-    private static String readBody(HttpExchange ex, int contentLength) throws IOException {
+    private static String readBody(HttpExchange ex) throws IOException {
         try (InputStream is = ex.getRequestBody()) {
-            byte[] buf = is.readAllBytes();
-            return new String(buf, StandardCharsets.UTF_8);
+            return new String(is.readAllBytes(), StandardCharsets.UTF_8);
         }
     }
 
@@ -51,9 +45,18 @@ public final class HttpUtil {
         try (OutputStream os = ex.getResponseBody()) { os.write(bytes); }
     }
 
-    public static void redirect(HttpExchange ex, String location) throws IOException {
+    public static void redirectSeeOther(HttpExchange ex, String location) throws IOException {
         ex.getResponseHeaders().set("Location", location);
-        ex.sendResponseHeaders(302, -1);
+        ex.sendResponseHeaders(303, -1);
         ex.close();
+    }
+
+    public static void noCache(com.sun.net.httpserver.HttpExchange ex) {
+        var h = ex.getResponseHeaders();
+        h.set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+        h.add("Cache-Control", "post-check=0, pre-check=0");
+        h.set("Pragma", "no-cache");
+        h.set("Expires", "0");
+        h.set("Vary", "Cookie");
     }
 }

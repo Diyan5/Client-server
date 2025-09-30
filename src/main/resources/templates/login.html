@@ -14,14 +14,15 @@
             <a href="/" class="logo-big"><img src="/images/th.png" alt="Logo"></a>
         </div>
 
-        <form class="form" action="/login" method="post" novalidate>
+        <!-- ВАЖНО: autocomplete="off" на формата -->
+        <form class="form" id="loginForm" action="/login" method="post" autocomplete="off" novalidate>
             <h3>Login</h3>
 
-            <label for="username">Email</label>
-            <input type="email" name="email" id="username" placeholder="Email" required>
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" placeholder="Email" required autocomplete="username" value="">
 
             <label for="password">Password</label>
-            <input type="password" name="password" id="password" placeholder="Password" required>
+            <input type="password" name="password" id="password" placeholder="Password" required autocomplete="current-password" value="">
 
             <!-- ERROR_LOGIN -->
 
@@ -31,5 +32,26 @@
     </section>
 </main>
 <footer>&copy; 2025 Retro Club Kit. All Rights Reserved.</footer>
+<script>
+    function hasJustLoggedOut() {
+        return document.cookie.split(';').some(c => c.trim().startsWith('JUST_LOGGED_OUT=1'))
+            || new URLSearchParams(location.search).has('lo');
+    }
+
+    // Ако е идване от BFCache или има флаг за logout → към началната
+    window.addEventListener('pageshow', function (e) {
+        const nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || null;
+        const backFwd = e.persisted || (nav && nav.type === 'back_forward');
+        if (backFwd || hasJustLoggedOut()) {
+            // ако искаш да идва на login, смени '/' на '/login'
+            window.location.replace('/');
+            return;
+        }
+        // изчистване на формата
+        const form = document.getElementById('loginForm');
+        if (form) { form.reset(); form.querySelectorAll('input').forEach(el => el.value=''); }
+    });
+</script>
+<script src="/js/login.js" defer></script>
 </body>
 </html>

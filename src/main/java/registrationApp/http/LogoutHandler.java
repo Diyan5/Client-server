@@ -16,22 +16,18 @@ public class LogoutHandler implements HttpHandler {
             HttpUtil.sendHtml(ex, 405, "<h1>405 Method Not Allowed</h1>");
             return;
         }
-
         String cookieHeader = ex.getRequestHeaders().getFirst("Cookie");
         Map<String, String> cookies = Cookies.parse(cookieHeader);
         String sid = cookies.get("SESSIONID");
-        SessionManager.destroy(sid);
+        if (sid != null) SessionManager.destroy(sid);
 
-        ex.getResponseHeaders().add(
-                "Set-Cookie",
-                "SESSIONID=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax"
-        );
+        ex.getResponseHeaders().add("Set-Cookie",
+                "SESSIONID=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax");
 
-        ex.getResponseHeaders().set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
-        ex.getResponseHeaders().set("Pragma", "no-cache");
-        ex.getResponseHeaders().set("Expires", "0");
-        ex.getResponseHeaders().set("Vary", "Cookie");
-
-        HttpUtil.redirect(ex, "/");
+        ex.getResponseHeaders().add("Set-Cookie",
+                "JUST_LOGGED_OUT=1; Max-Age=10; Path=/; SameSite=Lax");
+        HttpUtil.noCache(ex);
+        HttpUtil.redirectSeeOther(ex, "/login?lo=1");
     }
+
 }

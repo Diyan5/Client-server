@@ -24,12 +24,12 @@ public class RegisterHandler implements HttpHandler {
     }
 
     private void showForm(HttpExchange ex, String errorMsg) throws IOException {
+        HttpUtil.noCache(ex); // ВАЖНО
         String html = ResourceUtil.readText("templates/register.html");
         String errBlock = (errorMsg == null || errorMsg.isBlank())
                 ? ""
                 : "<p class=\"alert-warning\" style=\"color:#b91c1c;margin:.5rem 0\" role=\"alert\">"
                 + escape(errorMsg) + "</p>";
-
         html = html.replace("<!-- ERROR_REGISTER -->", errBlock);
         HttpUtil.sendHtml(ex, 200, html);
     }
@@ -47,7 +47,6 @@ public class RegisterHandler implements HttpHandler {
                 showForm(ex, "Password must be at least 8 chars with lower/UPPER/digit!");
                 return;
             }
-
             Optional<Long> existing = users.findIdByEmail(email);
             if (existing.isPresent()) { showForm(ex, "This email is already registered!"); return; }
 
@@ -55,7 +54,7 @@ public class RegisterHandler implements HttpHandler {
             byte[] hash = PasswordHasher.hash(password.toCharArray(), salt);
             users.insert(name, email, hash, salt);
 
-            HttpUtil.redirect(ex, "/login");
+            HttpUtil.redirectSeeOther(ex, "/login?fromReg=1");
         } catch (SQLException se) {
             se.printStackTrace();
             showForm(ex, "Database error.");

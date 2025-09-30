@@ -25,13 +25,13 @@ public class LoginHandler implements HttpHandler {
     }
 
     private void showForm(HttpExchange ex, String errorMsg) throws IOException {
+        HttpUtil.noCache(ex);
         String html = ResourceUtil.readText("templates/login.html");
         String errBlock = (errorMsg == null || errorMsg.isBlank())
                 ? ""
                 : "<p class=\"alert-warning\" style=\"color:#b91c1c;margin:.5rem 0\" role=\"alert\">"
                 + escape(errorMsg) + "</p>";
         html = html.replace("<!-- ERROR_LOGIN -->", errBlock);
-
         HttpUtil.sendHtml(ex, 200, html);
     }
 
@@ -51,8 +51,9 @@ public class LoginHandler implements HttpHandler {
             if (!ok) { showForm(ex, "Invalid email or password!"); return; }
 
             String sid = SessionManager.create(u.id(), u.name(), u.email());
-            ex.getResponseHeaders().add("Set-Cookie", "SESSIONID=" + sid + "; HttpOnly; Path=/; SameSite=Lax");
-            HttpUtil.redirect(ex, "/home");
+            ex.getResponseHeaders().add("Set-Cookie",
+                    "SESSIONID=" + sid + "; HttpOnly; Path=/; SameSite=Lax");
+            HttpUtil.redirectSeeOther(ex, "/home"); // PRG
         } catch (SQLException se) {
             se.printStackTrace();
             showForm(ex, "Database error.");

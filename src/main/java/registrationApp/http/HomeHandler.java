@@ -22,22 +22,14 @@ public class HomeHandler implements HttpHandler {
         SessionManager.Session s = SessionManager.get(sid);
 
         if (s == null) {
-            ex.getResponseHeaders().set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
-            ex.getResponseHeaders().set("Pragma", "no-cache");
-            ex.getResponseHeaders().set("Expires", "0");
-            ex.getResponseHeaders().set("Vary", "Cookie");
-            HttpUtil.redirect(ex, "/login");
+            HttpUtil.noCache(ex);
+            HttpUtil.redirectSeeOther(ex, "/login");
             return;
         }
 
+        HttpUtil.noCache(ex);
         String html = ResourceUtil.readText("templates/home.html");
         html = html.replace("{{username}}", escape(s.name));
-
-        ex.getResponseHeaders().set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
-        ex.getResponseHeaders().set("Pragma", "no-cache");
-        ex.getResponseHeaders().set("Expires", "0");
-        ex.getResponseHeaders().set("Vary", "Cookie");
-
         HttpUtil.sendHtml(ex, 200, html);
     }
 
