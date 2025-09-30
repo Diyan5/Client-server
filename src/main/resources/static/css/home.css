@@ -1,0 +1,56 @@
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header .nav { margin-left: auto; }
+
+.content-centered {
+    min-height: calc(100vh - 120px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+}
+
+.welcome {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.welcome h1 {
+    font-size: 2rem;
+    margin-bottom: .5rem;
+}
+
+.welcome h2 {
+    font-size: 1.5rem;
+    margin-bottom: .75rem;
+}
+
+.logout-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    text-decoration: none;
+    background: transparent;
+    transition: all .2s ease;
+    line-height: 1;
+}
+
+.logout-btn:hover {
+    background: #ffffff;
+    color: #000000;
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.logout-btn:active {
+    transform: translateY(0);
+    opacity: .9;
+}

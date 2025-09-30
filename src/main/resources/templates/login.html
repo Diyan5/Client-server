@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/background.css">
+    <link rel="stylesheet" href="/css/baseIndex.css">
+</head>
+<body>
+<main>
+    <section class="section full-height">
+        <div class="container">
+            <a href="/" class="logo-big"><img src="/images/th.png" alt="Logo"></a>
+        </div>
+
+        <form class="form" action="/login" method="post" novalidate>
+            <h3>Login</h3>
+
+            <label for="username">Email</label>
+            <input type="email" name="email" id="username" placeholder="Email" required>
+
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" placeholder="Password" required>
+
+            <!-- ERROR_LOGIN -->
+
+            <button type="submit">Log In</button>
+            <p class="form-already">Don't have an account? <a href="/register">Register now</a>!</p>
+        </form>
+    </section>
+</main>
+<footer>&copy; 2025 Retro Club Kit. All Rights Reserved.</footer>
+</body>
+</html>

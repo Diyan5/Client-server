@@ -1,0 +1,36 @@
+body {
+    margin: 0;
+    background-size: cover;
+    background: radial-gradient(circle at 90% top,
+    #2b572a 0%,
+    #264e27 10%,
+    #224622 20%,
+    #1d3d1e 30%,
+    #193419 40%,
+    #152c16 50%,
+    #112311 60%,
+    #0d1a0d 70%,
+    #081108 80%,
+    #040904 90%,
+    #000000 100%) no-repeat fixed;
+    font-family: 'Poppins', sans-serif;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+}
+
+footer {
+    text-align: center;
+    width: 100%;
+    color: #fff;
+    padding: 10px 0;
+    font-size: 20px;
+    font-family: 'Poppins', sans-serif;
+    margin-top: auto;
+}

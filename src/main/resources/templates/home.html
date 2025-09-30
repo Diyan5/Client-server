@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/background.css">
+    <link rel="stylesheet" type="text/css" href="/css/home.css">
+</head>
+<body>
+<header class="header">
+    <div class="header-inner">
+        <nav class="nav">
+            <a href="/logout" class="logout-btn" aria-label="Logout">Logout</a>
+        </nav>
+    </div>
+</header>
+
+<main class="content content-centered">
+    <section class="welcome">
+        <h1>Welcome!</h1>
+        <h2>Hello, <span class="username">{{username}}</span>!</h2>
+        <p>You have successfully logged in.</p>
+    </section>
+</main>
+
+<footer>&copy; 2025 Retro Club Kit. All Rights Reserved.</footer>
+<script src="/js/auth-guard.js" defer></script>
+</body>
+</html>
