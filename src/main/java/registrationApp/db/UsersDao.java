@@ -46,4 +46,25 @@ public final class UsersDao {
             try (ResultSet rs = ps.getGeneratedKeys()) { rs.next(); return rs.getLong(1); }
         }
     }
+
+    public int updateProfile(long id, String name, String email) throws SQLException {
+        String sql = "UPDATE users SET name = ?, email = ? WHERE id = ?";
+        try (Connection c = Db.get(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, name);
+            ps.setString(2, email);
+            ps.setLong(3, id);
+            return ps.executeUpdate();
+        }
+    }
+
+    public int updatePassword(long id, byte[] passHash, byte[] passSalt) throws SQLException {
+        String sql = "UPDATE users SET pass_hash = ?, pass_salt = ? WHERE id = ?";
+        try (Connection c = Db.get(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setBytes(1, passHash);
+            ps.setBytes(2, passSalt);
+            ps.setLong(3, id);
+            return ps.executeUpdate();
+        }
+    }
+
 }

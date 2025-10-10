@@ -11,6 +11,7 @@ public final class Router {
         s.createContext("/login",    new LoginHandler());
         s.createContext("/home",     new HomeHandler());
         s.createContext("/logout",   new LogoutHandler());
+        s.createContext("/my-account", new MyAccountHandler());
         s.createContext("/js", new StaticHandler("/js/", "static/js"));
     }
 }

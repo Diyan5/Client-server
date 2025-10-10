@@ -21,13 +21,21 @@ public class LogoutHandler implements HttpHandler {
         String sid = cookies.get("SESSIONID");
         if (sid != null) SessionManager.destroy(sid);
 
+        // kill SESSIONID (HttpOnly)
         ex.getResponseHeaders().add("Set-Cookie",
                 "SESSIONID=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax");
 
+        // kill фронтенд флага за логнат
+        ex.getResponseHeaders().add("Set-Cookie",
+                "LOGGED_IN=; Max-Age=0; Path=/; SameSite=Lax");
+
+        // кратък флаг за „току-що излязъл“ (ползва се от JS guard по желание)
         ex.getResponseHeaders().add("Set-Cookie",
                 "JUST_LOGGED_OUT=1; Max-Age=10; Path=/; SameSite=Lax");
+
         HttpUtil.noCache(ex);
         HttpUtil.redirectSeeOther(ex, "/login?lo=1");
     }
+
 
 }

@@ -19,6 +19,7 @@ public class TemplateHandler implements HttpHandler {
             return;
         }
         try {
+            HttpUtil.noCache(ex); // важно: да не се кешира index
             String html = ResourceUtil.readText(templatePath);
             HttpUtil.sendHtml(ex, 200, html);
         } catch (Exception e) {
@@ -26,4 +27,5 @@ public class TemplateHandler implements HttpHandler {
             HttpUtil.sendHtml(ex, 500, "<h1>500 Internal Server Error</h1>");
         }
     }
+
 }

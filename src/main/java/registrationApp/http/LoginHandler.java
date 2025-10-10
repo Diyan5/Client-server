@@ -26,6 +26,12 @@ public class LoginHandler implements HttpHandler {
 
     private void showForm(HttpExchange ex, String errorMsg) throws IOException {
         HttpUtil.noCache(ex);
+        String cookieHeader = ex.getRequestHeaders().getFirst("Cookie");
+        String sid = Cookies.parse(cookieHeader).get("SESSIONID");
+        if (registrationApp.security.SessionManager.get(sid) != null) {
+            HttpUtil.redirectSeeOther(ex, "/home");
+            return;
+        }
         String html = ResourceUtil.readText("templates/login.html");
         String errBlock = (errorMsg == null || errorMsg.isBlank())
                 ? ""
@@ -34,6 +40,7 @@ public class LoginHandler implements HttpHandler {
         html = html.replace("<!-- ERROR_LOGIN -->", errBlock);
         HttpUtil.sendHtml(ex, 200, html);
     }
+
 
     private void handlePost(HttpExchange ex) throws IOException {
         try {
@@ -51,8 +58,19 @@ public class LoginHandler implements HttpHandler {
             if (!ok) { showForm(ex, "Invalid email or password!"); return; }
 
             String sid = SessionManager.create(u.id(), u.name(), u.email());
+
+            // SESSIONID: HttpOnly (само за бекенда)
             ex.getResponseHeaders().add("Set-Cookie",
                     "SESSIONID=" + sid + "; HttpOnly; Path=/; SameSite=Lax");
+
+            // LOGGED_IN: НЕ HttpOnly (само флаг за фронтенда срещу bfcache). 1800s = 30 минути (като TTL-а на сесията).
+            ex.getResponseHeaders().add("Set-Cookie",
+                    "LOGGED_IN=1; Max-Age=1800; Path=/; SameSite=Lax");
+
+            // почисти флага за „току-що логаутнат“
+            ex.getResponseHeaders().add("Set-Cookie",
+                    "JUST_LOGGED_OUT=; Max-Age=0; Path=/; SameSite=Lax");
+
             HttpUtil.redirectSeeOther(ex, "/home"); // PRG
         } catch (SQLException se) {
             se.printStackTrace();
@@ -62,6 +80,7 @@ public class LoginHandler implements HttpHandler {
             HttpUtil.sendHtml(ex, 500, "<h1>500 Internal Server Error</h1>");
         }
     }
+
 
     private static String trim(String s) { return s == null ? null : s.trim(); }
 
