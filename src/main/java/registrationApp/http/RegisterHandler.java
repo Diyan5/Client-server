@@ -24,7 +24,7 @@ public class RegisterHandler implements HttpHandler {
     }
 
     private void showForm(HttpExchange ex, String errorMsg) throws IOException {
-        HttpUtil.noCache(ex); // ВАЖНО
+        HttpUtil.noCache(ex);
         String html = ResourceUtil.readText("templates/register.html");
         String errBlock = (errorMsg == null || errorMsg.isBlank())
                 ? ""
